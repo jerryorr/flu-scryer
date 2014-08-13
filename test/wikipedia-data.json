@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1313,
+    "view_date": "2014-08-04",
+    "daily_views": 1
+  },
+  {
+    "id": 1314,
+    "view_date": "2014-08-05",
+    "daily_views": 2
+  },
+  {
+    "id": 1315,
+    "view_date": "2014-08-10",
+    "daily_views": 3
+  },
+  {
+    "id": 1316,
+    "view_date": "2014-08-13",
+    "daily_views": 4
+  },
+  {
+    "id": 1317,
+    "view_date": "2014-08-14",
+    "daily_views": 5
+  },
+  {
+    "id": 1318,
+    "view_date": "2014-08-15",
+    "daily_views": 6
+  },
+  {
+    "id": 1319,
+    "view_date": "2014-08-16",
+    "daily_views": 7
+  }
+]

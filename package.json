@@ -1,0 +1,22 @@
+{
+  "name": "flu-scryer",
+  "version": "0.0.1",
+  "description": "Parses and analyzes flu data from sources like Google Flu Trends and Wikipedia page views",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./test/wikipedia-test"
+  },
+  "author": "Jerry Orr <orr94@yahoo.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.3"
+  },
+  "dependencies": {
+    "csv-stream": "^0.1.3",
+    "moment": "^2.8.1",
+    "request": "^2.39.0",
+    "lazy.js": "^0.3.2",
+    "JSONStream": "^0.9.0"
+  }
+}
