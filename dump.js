@@ -1,66 +1,59 @@
 var google = require('./lib/google')
   , wikipedia = require('./lib/wikipedia')
   , moment = require('moment')
+  , _ = require('lodash')
 
-var startDate = moment('2012-01-01')
+var startDate = moment('2011-09-01')
 var filterStartDate = function (data) {
   return data.date.isSame(startDate) || data.date.isAfter(startDate)
 }
 
-// var result = google('United States')
-//   // .filter(function (data) {
-//   //   data.
-//   // })
-//   .filter(filterStartDate)
-//   .take(54)
-//   .map(function (data) {
-//     return {
-//       value: data.value,
-//       date: data.date.format()
-//     }
-//   })
-// // console.log(result.value())
-// result.each(function (data) {
-//   console.log(data)
-// })
 
-// var result2 = wikipedia()
-  // .filter(filterStartDate)
-  // .take(5)
-  // .map(function (data) {
-  //   return {
-  //     value: data.value,
-  //     date: data.date.format()
-  //   }
-  // })
-// console.log(result2.value())
-// result2.each(function (data) {
-//   console.log(data)
-// })
-wikipedia(function (err, result) {
-  if (err) {
-    return console.log(err)
-  }
-  // console.log('result: ', result)
+var async = require('async')
 
-  console.log('Date,Vists')
-  result
-    .map(function (item) {
-      return {
-        date: item.date.format('YYYY-MM-DD'),
-        value: item.value
-      }
-    })
-    .each(function (item) {
-      console.log(item.date, ',', item.value)
-    })
-})
+// TODO put this all in a module
+async.parallel({
+    google: function (cb) {
+      google('United States', cb)
+    },
+    wikipedia: function (cb) {
+      wikipedia(cb)
+    },
+  },
+  function (err, results) {
+    if (err) {
+      return console.log('err: ', err)
+    }
+    console.log('Date,Google Flu Trends,Wikipedia')
 
-// var Lazy = require('lazy.js')
-// var array = Lazy.range(1000).toArray();
-// function square(x) { return x * x; }
-// function inc(x) { return x + 1; }
-// function isEven(x) { return x % 2 === 0; }
-// var result = Lazy(array).map(square).map(inc).filter(isEven).take(5);
+    var google = results.google.map(function (item) {
+        return _.extend({ source: 'google'}, item)
+      })
+      .filter(filterStartDate)
 
-// console.log(result)
+
+    var wikipedia = results.wikipedia.map(function (item) {
+        return _.extend({ source: 'wikipedia'}, item)
+      })
+      .filter(filterStartDate)
+
+    // TODO now I need to scale!
+
+    google.union(wikipedia)
+      .groupBy(function (item) {
+        return item.date.format('YYYY-MM-DD')
+      })
+      .map(function (items, key) {
+        // console.log('items: ', items)
+        return {
+          date: key,
+          // TODO *10 was a quick scaling hack
+          google: _.find(items, function (item) { return item.source === 'google'}).value * 10,
+          wikipedia: _.find(items, function (item) { return item.source === 'wikipedia'}).value,
+        }
+      })
+      .each(function (item) {
+        console.log(item.date, ',', item.google, ',', item.wikipedia)
+      })
+  })
+
